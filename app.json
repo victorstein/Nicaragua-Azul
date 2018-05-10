@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "Nicaragua Azul",
+    "description": "App development for Nicaragua Azul National Museum",
+    "slug": "NicaraguAzul",
+    "privacy": "public",
+    "sdkVersion": "26.0.0",
+    "platforms": ["ios", "android"],
+    "version": "2.0.1",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 5000
+    },
+    "ios": {
+        "supportsTablet": true,
+  			"bundleIdentifier": "com.tfm.nicaraguazul",
+      },
+    "android": {
+      "package": "com.tfm.nicaraguazul",
+      "permissions": ["CAMERA"]
+    },
+		"facebookScheme": "fb446151882470542",
+		"facebookAppId": "446151882470542",
+		"facebookDisplayName": "NicaraguAzul"
+  },
+}

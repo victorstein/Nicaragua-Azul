@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { ScrollView, View, Text, Image, StatusBar, FlatList, AsyncStorage, TouchableOpacity } from 'react-native';
+import { ScrollView, View, Text, Image, FlatList, AsyncStorage, TouchableOpacity } from 'react-native';
 import { Avatar } from 'react-native-elements';
-import * as helper from '../functions/Main';
-import { DangerZone } from 'expo';
+import { DangerZone, ScreenOrientation, Constants } from 'expo';
 const { Lottie } = DangerZone;
 
 export default class MyTreasures extends Component {
@@ -16,39 +15,42 @@ export default class MyTreasures extends Component {
     }
   }
 
-  static navigationOptions = ({ navigation })=>({
-    headerRight:
-    <TouchableOpacity
-      style={{
-        width: 60,
-        height: 60,
-        borderRadius: 100/2,
-        backgroundColor: 'white',
-        marginHorizontal: 15,
-        elevation: 10
-      }}
-      onPress={()=>{
-        navigation.navigate('Main');
-      }}
-    >
-      <Image source={require('../assets/iconSmall.png')} style={{ width: 60, height: 60, }} />
-    </TouchableOpacity>
-    ,
-    headerTitle: "Mis Tesoros",
-    headerStyle: { backgroundColor: "#006DDB", height: 70, margin: 0 },
-    headerTintColor: "white"
-  })
+  static navigationOptions ({ navigation }) {
+    return {
+      headerRight:
+  <TouchableOpacity
+    style={{
+      width: 50,
+      height: 50,
+      borderRadius: 100 / 2,
+      backgroundColor: 'white',
+      marginHorizontal: 15,
+      elevation: 10
+    }}
+    onPress={() => {
+      navigation.navigate('Main')
+    }}
+  >
+    <Image source={require('../assets/iconSmall.png')} style={{ width: 50, height: 50 }} />
+  </TouchableOpacity>,
+      headerTitle: 'Mis Tesoros',
+      headerStyle: { backgroundColor: '#006DDB', height: 70, marginVertical: -Constants.statusBarHeight },
+      headerTintColor: 'white'
+    }
+  }
 
   async componentDidMount(){
-    Expo.ScreenOrientation.allow(Expo.ScreenOrientation.Orientation.PORTRAIT_UP);
+    ScreenOrientation.allowAsync(ScreenOrientation.Orientation.PORTRAIT_UP);
     let treasuresTotal = await AsyncStorage.getItem("treasuresTotal");
     let user = JSON.parse(await AsyncStorage.getItem("user"));
     let userTreasures = [];
-    Object.entries(user.treasures).forEach((u,i)=>{
-      if(u[1] != "none"){
-        userTreasures.push(u[1]);
-      }
-    })
+    if ('treasures' in user) {
+      Object.entries(user.treasures).forEach((u,i)=>{
+        if(u[1] != "none"){
+          userTreasures.push(u[1]);
+        }
+      })
+    }
 
     this.setState({
       treasuresTotal: treasuresTotal,
@@ -65,6 +67,7 @@ export default class MyTreasures extends Component {
             ref={(animation) => {
               (animation) ? animation.play() : null
             }}
+            hardwareAccelerationAndroid
             loop={true}
             source={require('../assets/animations/loader.json')}
             resizeMode="contain"
@@ -76,7 +79,7 @@ export default class MyTreasures extends Component {
   renderList = ()=>{
     return(
       <View>
-        <View style={{ flexDirection: 'row', paddingVertical: 20, paddingHorizontal: 10, }}>
+        <View style={{ flexDirection: 'row', paddingTop: 50, paddingBottom: 20, paddingHorizontal: 10, }}>
           <View style={{ width: '70%', justifyContent: 'flex-end', paddingLeft: 10, bottom: -3 }}>
             <Text style={{ color: '#767676', fontSize: 26, fontWeight: '100' }}>
               Encontrados
@@ -84,7 +87,14 @@ export default class MyTreasures extends Component {
           </View>
           <View style={{  width: '30%', alignItems: 'flex-end', justifyContent: 'flex-end', paddingRight: 10 }}>
             <Text style={{ color: '#767676', fontSize: 18, opacity: 0.8 }}>
-              { (this.state.user.treasures["0"] == "none") ? 0 : Object.keys(this.state.user.treasures).length }/{ this.state.treasuresTotal }
+              {
+                this.state.user.treasures
+                  ? (this.state.user.treasures["0"] == "none")
+                    ? 0
+                    : Object.keys(this.state.user.treasures).length
+                  : 0
+              }
+              / { this.state.treasuresTotal }
             </Text>
           </View>
         </View>
@@ -109,8 +119,8 @@ export default class MyTreasures extends Component {
                 >
                   <View style={{ width: '20%', justifyContent: 'center', alignItems: 'center' }}>
                     <Avatar
-                      width={50}
-                      heigth={50}
+                      width={60}
+                      heigth={60}
                       rounded
                       overlayContainerStyle={{ backgroundColor: 'transparent' }}
                       source={require('../assets/bottle.png')}
@@ -125,7 +135,7 @@ export default class MyTreasures extends Component {
                 </TouchableOpacity>
               )
             }}
-            keyExtractor={ (item, index) => index }
+            keyExtractor={ (item, index) => index.toString() }
           />
         </View>
       </View>
@@ -135,13 +145,6 @@ export default class MyTreasures extends Component {
   render(){
     return(
       <ScrollView style={{ flex: 1 }}>
-        <StatusBar
-          backgroundColor="blue"
-          barStyle="light-content"
-          hidden={false}
-          animated={true}
-          showHideTransition="slide"
-        />
         {
           (this.state.loading) ? this.loading() : this.renderList()
         }

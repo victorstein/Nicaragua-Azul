@@ -59,7 +59,7 @@ export default class RenderBioView extends Component {
   })
 
   async componentDidMount(){
-    Expo.ScreenOrientation.allow(Expo.ScreenOrientation.Orientation.PORTRAIT_UP);
+    Expo.ScreenOrientation.allowAsync(Expo.ScreenOrientation.Orientation.PORTRAIT_UP);
     let data = JSON.parse(await AsyncStorage.getItem('Wiki'));
     let module = this.props.navigation.state.params.data;
     let header = this.props.navigation.state.params.header;
@@ -162,7 +162,7 @@ export default class RenderBioView extends Component {
             </TouchableOpacity>
           )
         }}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item, index) => index.toString()}
         ItemSeparatorComponent={()=>{
           return(
             <View style={{ height: 1, width: helper.width, backgroundColor: '#BCBEBF' }} />
@@ -180,6 +180,7 @@ export default class RenderBioView extends Component {
               (animation) ? animation.play() : null
             }}
             loop={true}
+            hardwareAccelerationAndroid
             source={require('../assets/animations/loader.json')}
             resizeMode="contain"
           />

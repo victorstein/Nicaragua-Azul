@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, Image, StatusBar, ScrollView, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native';
 import { Avatar } from 'react-native-elements';
 import * as helper from '../functions/Main';
-import { DangerZone } from 'expo';
+import { DangerZone, ScreenOrientation, Constants } from 'expo';
 const { Lottie } = DangerZone;
 
 export default class Ambassadors extends Component {
@@ -14,31 +14,32 @@ export default class Ambassadors extends Component {
     }
   }
 
-  static navigationOptions = ({ navigation })=>({
-    headerRight:
-    <TouchableOpacity
-      style={{
-        width: 60,
-        height: 60,
-        borderRadius: 100/2,
-        backgroundColor: 'white',
-        marginHorizontal: 15,
-        elevation: 10
-      }}
-      onPress={()=>{
-        navigation.navigate('Main');
-      }}
-    >
-      <Image source={require('../assets/iconSmall.png')} style={{ width: 60, height: 60, }} />
-    </TouchableOpacity>
-    ,
-    headerTitle: "Embajadores",
-    headerStyle: { backgroundColor: "#006DDB", height: 70, margin: 0 },
-    headerTintColor: "white"
-  })
+  static navigationOptions ({ navigation }) {
+    return {
+      headerRight:
+  <TouchableOpacity
+    style={{
+      width: 50,
+      height: 50,
+      borderRadius: 100 / 2,
+      backgroundColor: 'white',
+      marginHorizontal: 15,
+      elevation: 10
+    }}
+    onPress={() => {
+      navigation.navigate('Main')
+    }}
+  >
+    <Image source={require('../assets/iconSmall.png')} style={{ width: 50, height: 50 }} />
+  </TouchableOpacity>,
+      headerTitle: 'Embajadores',
+      headerStyle: { backgroundColor: '#006DDB', height: 70, marginVertical: -Constants.statusBarHeight },
+      headerTintColor: 'white'
+    }
+  }
 
   async componentDidMount(){
-    Expo.ScreenOrientation.allow(Expo.ScreenOrientation.Orientation.PORTRAIT_UP);
+    ScreenOrientation.allowAsync(ScreenOrientation.Orientation.PORTRAIT_UP);
     let data = await helper.getUsersDataBase();
     data = JSON.stringify(data);
     data = JSON.parse(data);
@@ -64,8 +65,6 @@ export default class Ambassadors extends Component {
               <View style={{ flexDirection: 'row', marginVertical: 10 }}>
                 <View style={{ width: helper.width/4, justifyContent: 'center', alignItems: 'center' }}>
                   <Avatar
-                    width={50}
-                    heigth={50}
                     rounded
                     source={{ uri: item.picture }}
                   />
@@ -84,7 +83,7 @@ export default class Ambassadors extends Component {
               </View>
             )
           }}
-          keyExtractor={(item, index) => index}
+          keyExtractor={(item, index) => index.toString()}
         />
       )
     }
@@ -97,6 +96,7 @@ export default class Ambassadors extends Component {
             ref={(animation) => {
               (animation) ? animation.play() : null
             }}
+            hardwareAccelerationAndroid
             loop={true}
             source={require('../assets/animations/loader.json')}
             resizeMode="contain"
@@ -107,14 +107,7 @@ export default class Ambassadors extends Component {
 
   render(){
     return(
-      <View style={{ flex: 1 }}>
-        <StatusBar
-          backgroundColor="blue"
-          barStyle="light-content"
-          hidden={false}
-          animated={true}
-          showHideTransition="slide"
-        />
+      <View style={{ flex: 1, marginTop: Constants.statusBarHeight }}>
         <View style={{ backgroundColor: '#0085DE', height: helper.height/7, alignItems: 'flex-start', justifyContent: 'center' }}>
           <Text style={{ paddingLeft: 30, fontSize: 20, fontWeight: '200', color: '#fff' }}>Lista de</Text>
           <Text style={{ paddingLeft: 30, fontSize: 20, fontWeight: '500', color: '#fff' }}>Embajadores azules</Text>

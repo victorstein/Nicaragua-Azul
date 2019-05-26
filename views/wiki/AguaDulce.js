@@ -8,8 +8,8 @@ import {
   TouchableOpacity,
   Image
 } from 'react-native';
-import { Avatar, Icon } from 'react-native-elements';
-import { DangerZone } from 'expo';
+import { Icon } from 'react-native-elements';
+import { DangerZone, ScreenOrientation, Constants } from 'expo';
 import * as helper from '../../functions/Main';
 const { Lottie } = DangerZone;
 
@@ -22,44 +22,47 @@ export default class AguaDulce extends Component {
     }
   }
 
-  static navigationOptions = ({ navigation })=>({
-    headerRight:
-      <TouchableOpacity
-        style={{
-          width: 60,
-          height: 60,
-          borderRadius: 100/2,
-          backgroundColor: 'white',
-          marginHorizontal: 15,
-          elevation: 10
+
+  static navigationOptions ({ navigation }) {
+    return {
+      headerRight:
+        <TouchableOpacity
+          style={{
+            width: 50,
+            height: 50,
+            borderRadius: 100/2,
+            backgroundColor: 'white',
+            marginHorizontal: 15,
+            elevation: 10
+          }}
+          onPress={()=>{
+            navigation.navigate('Main');
+          }}
+        >
+          <Image source={require('../../assets/iconSmall.png')} style={{ width: 50, height: 50, }} />
+        </TouchableOpacity>
+      ,
+      headerLeft:
+      <Icon
+        name='arrow-back'
+        color='#fff'
+        size={30}
+        containerStyle={{
+          marginLeft: 10
         }}
+        underlayColor='transparent'
         onPress={()=>{
-          navigation.navigate('Main');
+          navigation.goBack(null)
         }}
-      >
-        <Image source={require('../../assets/iconSmall.png')} style={{ width: 60, height: 60, }} />
-      </TouchableOpacity>
-    ,
-    headerLeft:
-    <Icon
-      name='arrow-back'
-      color='#fff'
-      size={30}
-      containerStyle={{
-        marginLeft: 10
-      }}
-      underlayColor='transparent'
-      onPress={()=>{
-        navigation.goBack(null)
-      }}
-    />,
-    headerTitle: "Agua Dulce",
-    headerStyle: { backgroundColor: "#03A9F4", height: 70, margin: 0 },
-    headerTintColor: "white",
-  })
+      />,
+      headerTitle: "Agua Dulce",
+      headerStyle: { backgroundColor: "#03A9F4", height: 70, margin: 0, marginTop: -Constants.statusBarHeight },
+      headerTintColor: "white",
+    }
+  }
 
   async componentDidMount(){
-    Expo.ScreenOrientation.allow(Expo.ScreenOrientation.Orientation.PORTRAIT_UP);
+    ScreenOrientation.allowAsync(ScreenOrientation.Orientation.PORTRAIT_UP);
     let data = JSON.parse(await AsyncStorage.getItem('Wiki'));
     let wiki = [];
     Object.entries(data.AguaDulce).forEach((u, i)=>{
@@ -186,7 +189,7 @@ export default class AguaDulce extends Component {
             )
           }
         }}
-        keyExtractor={(item, index) => index}
+        keyExtractor={(item, index) => index.toString()}
         ItemSeparatorComponent={()=>{
           return(
             <View style={{ height: 1, width: helper.width, backgroundColor: '#BCBEBF' }} />
@@ -203,6 +206,7 @@ export default class AguaDulce extends Component {
             ref={(animation) => {
               (animation) ? animation.play() : null
             }}
+            hardwareAccelerationAndroid
             loop={true}
             source={require('../../assets/animations/loader.json')}
             resizeMode="contain"
@@ -214,13 +218,6 @@ export default class AguaDulce extends Component {
   render(){
     return(
       <View style={{ flex: 1 }}>
-        <StatusBar
-          backgroundColor="blue"
-          barStyle="light-content"
-          hidden={false}
-          animated={true}
-          showHideTransition="slide"
-        />
         {
           (this.state.wiki) ? this.renderContent() : this.loading()
         }

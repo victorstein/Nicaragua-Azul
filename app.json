@@ -4,9 +4,9 @@
     "description": "App development for Nicaragua Azul National Museum",
     "slug": "NicaraguAzul",
     "privacy": "public",
-    "sdkVersion": "26.0.0",
+    "sdkVersion": "32.0.0",
     "platforms": ["ios", "android"],
-    "version": "2.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -17,15 +17,21 @@
     "updates": {
       "enabled": true,
       "checkAutomatically": "ON_LOAD",
-      "fallbackToCacheTimeout": 5000
+      "fallbackToCacheTimeout": 0
     },
     "ios": {
         "supportsTablet": true,
   			"bundleIdentifier": "com.tfm.nicaraguazul",
-      },
+        "infoPlist": {
+          "NSCameraUsageDescription": "Permite que Nicaragua Azul acceda a la cámara para escanear los códigos QR en el museo",
+          "NSLocationWhenInUseUsageDescription": "Permite que Nicaragua Azul acceda a tu localización para crear una mejor experiencia en el museo"
+        },
+        "buildNumber": "1.0.4"
+    },
     "android": {
       "package": "com.tfm.nicaraguazul",
-      "permissions": ["CAMERA"]
+      "permissions": ["CAMERA"],
+      "versionCode": 4
     },
 		"facebookScheme": "fb446151882470542",
 		"facebookAppId": "446151882470542",

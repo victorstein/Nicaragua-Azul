@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ImageBackground, Text, View, AsyncStorage } from 'react-native';
+import { ImageBackground, Text, View, AsyncStorage, TouchableHighlight } from 'react-native';
 import { Button } from 'react-native-elements';
 import { NavigationActions } from 'react-navigation';
 import * as helper from '../functions/Main';
@@ -15,21 +15,18 @@ export default class Welcome extends Component {
   }
 
   componentDidMount(){
-    Expo.ScreenOrientation.allow(Expo.ScreenOrientation.Orientation.PORTRAIT_UP);
+    Expo.ScreenOrientation.allowAsync(Expo.ScreenOrientation.Orientation.PORTRAIT_UP);
   }
 
   resetNavigation = async (page) => {
     await AsyncStorage.setItem('firstTimeUse', 'used');
-    const resetAction = NavigationActions.reset({
-      index: 0,
-      actions: [NavigationActions.navigate({ routeName: page })],
-    });
-    this.props.navigation.dispatch(resetAction);
+    this.props.navigation.navigate(page);
   };
 
   render() {
     return (
       <ImageBackground
+        fadeDuration={0}
         style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
         source={require('../assets/login-1.jpg')}>
         <View
@@ -41,14 +38,16 @@ export default class Welcome extends Component {
           <Button
             title="OMITIR"
             fontWeight="400"
+            type="clear"
             fontSize={18}
-            textStyle={{
+            underlayColor='transparent'
+            titleStyle={{
               color: '#2293D4',
               fontFamily: 'IndieFlower'
             }}
-            transparent
+            TouchableComponent={TouchableHighlight}
             color="#888"
-            containerViewStyle={{ position: 'absolute', right: 5, top: 15 }}
+            containerStyle={{ position: 'absolute', right: 5, top: 15 }}
             onPress={async () => {
               await helper.createLocalUser();
               this.resetNavigation('Main');

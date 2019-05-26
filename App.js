@@ -34,7 +34,6 @@ export default class NicaraguAzul extends Component {
     else{
       this.setState({ firstTimeUse: firstTimeUse, loading: false, isDevice: Constants.isDevice })
     }
-
   }
 
   checkForValidTreasures = async ()=>{
